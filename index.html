@@ -530,4 +530,355 @@
                 
                 <div class="glass-card" id="test-intro-card">
                     <div style="text-align:center; padding:3rem 0;">
-                        <div style="width:120px; height:120px; background:#EFF6FF; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0
+                        <div style="width:120px; height:120px; background:#EFF6FF; border-radius:50%; display:flex; align-items:center; justify-content:center; margin:0 auto 2rem;">
+                            <i class="fas fa-file-signature" style="font-size:4rem; color:var(--rc-blue);"></i>
+                        </div>
+                        <h2 style="font-size:2.8rem; margin-bottom:1rem; font-family:'Outfit';">Certification Protocol</h2>
+                        <p style="font-size:1.2rem; color:var(--text-muted); max-width:600px; margin:0 auto 2rem;">
+                            Demuestra tu maestría sobre los cuantificadores combinando vocabulario de alta cocina y tecnología de punta.
+                        </p>
+                        
+                        <div style="display:flex; justify-content:center; gap:30px; margin-bottom:3rem;">
+                            <div style="background:var(--bg-base); padding:15px 25px; border-radius:12px; border:1px solid #E2E8F0;">
+                                <div style="font-size:0.9rem; color:var(--text-muted); font-weight:600; text-transform:uppercase;">Questions</div>
+                                <div style="font-size:1.5rem; font-weight:800; font-family:'Outfit'; color:var(--rc-navy);">15 Items</div>
+                            </div>
+                            <div style="background:#FEF2F2; padding:15px 25px; border-radius:12px; border:1px solid #FECDD3;">
+                                <div style="font-size:0.9rem; color:#E11D48; font-weight:600; text-transform:uppercase;">Time Limit</div>
+                                <div style="font-size:1.5rem; font-weight:800; font-family:'Outfit'; color:#BE123C;">05:00 Min</div>
+                            </div>
+                        </div>
+
+                        <button class="btn-primary" onclick="initiateTest()">START EXAM NOW</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" id="test-engine-card" style="display:none; padding:4rem;">
+                    <div class="exam-header-bar">
+                        <div class="q-tracker">Question <span id="q-counter" style="color:var(--rc-blue);">1</span>/15</div>
+                        <div class="timer-display" id="clock-display"><i class="fas fa-stopwatch"></i> 05:00</div>
+                    </div>
+
+                    <div class="question-text" id="question-render">
+                        Loading protocol data...
+                    </div>
+
+                    <div class="options-container" id="options-render">
+                        </div>
+
+                    <button class="btn-primary" id="btn-next-q" onclick="evaluateAndNext()" disabled style="width:100%; max-width:100%;">LOCK ANSWER</button>
+                </div>
+            </section>
+
+        </div> <footer class="footer">
+            <div style="font-family:'Outfit'; font-weight:800; font-size:1.2rem; color:var(--rc-navy); margin-bottom:10px;">RATORS CLUB</div>
+            <p>Engineered for Grammar Mastery. &copy; 2026 Teacher Netza.</p>
+            <p style="font-size:0.75rem; opacity:0.6; margin-top:5px;">GNU General Public License v3.0</p>
+        </footer>
+
+    </main>
+
+    <div id="toast"><span id="toast-msg">Mensaje</span></div>
+
+    <div class="modal-overlay" id="result-modal">
+        <div class="result-card">
+            <h2 style="font-size:2.5rem; font-family:'Outfit'; color:var(--rc-navy); margin-bottom:10px;">System Report</h2>
+            <p style="font-size:1.2rem; font-weight:600; color:var(--text-muted); margin-bottom:2rem; text-transform:uppercase; letter-spacing:2px;" id="modal-student-name">STUDENT</p>
+            
+            <div class="score-display" id="modal-score">100%</div>
+            
+            <p id="modal-feedback" style="font-size:1.1rem; color:var(--text-body); margin-bottom:2.5rem; line-height:1.6;">
+                Análisis completado.
+            </p>
+            
+            <button class="btn-primary" onclick="location.reload()" style="max-width:100%;"><i class="fas fa-redo"></i> RETURN TO MAIN MENU</button>
+        </div>
+    </div>
+
+    <script>
+        /* --- 1. SYSTEM INITIALIZATION --- */
+        let studentStr = "";
+
+        function showToast(msg, type = 'default') {
+            const toast = document.getElementById('toast');
+            document.getElementById('toast-msg').innerText = msg;
+            toast.style.background = type === 'error' ? 'var(--c-rose)' : 'var(--rc-navy)';
+            toast.style.color = 'white';
+            toast.classList.add('show');
+            setTimeout(() => toast.classList.remove('show'), 3500);
+        }
+
+        function initSystem() {
+            const input = document.getElementById('student-input').value.trim();
+            if(input.length < 2) {
+                showToast("Por favor, ingresa un nombre válido para el certificado.", 'error');
+                return;
+            }
+            studentStr = input;
+            
+            // Populate UI with Name
+            document.getElementById('ui-name').innerText = studentStr.toUpperCase();
+            document.getElementById('welcome-student-name').innerText = studentStr;
+            document.getElementById('modal-student-name').innerText = studentStr.toUpperCase();
+
+            // Transition
+            document.getElementById('gateway').style.opacity = '0';
+            document.getElementById('gateway').style.pointerEvents = 'none';
+            setTimeout(() => document.getElementById('gateway').style.display = 'none', 500);
+            
+            showToast(`Protocolo iniciado. Bienvenido, ${studentStr}.`);
+        }
+
+        /* --- 2. SIDEBAR NAVIGATION --- */
+        function toggleSidebar() {
+            document.getElementById('sidebar').classList.toggle('open');
+            document.getElementById('sidebarOverlay').classList.toggle('active');
+        }
+
+        function navTo(tabId, btnRef) {
+            document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+            btnRef.classList.add('active');
+
+            document.querySelectorAll('.view-section').forEach(s => {
+                s.classList.remove('active');
+                s.style.animation = 'none';
+            });
+            
+            const target = document.getElementById(tabId);
+            target.classList.add('active');
+            void target.offsetWidth; // Force Reflow
+            target.style.animation = 'slideUpFade 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards';
+
+            if(window.innerWidth <= 1024) toggleSidebar();
+            window.scrollTo({top: 0, behavior: 'smooth'});
+        }
+
+        /* --- 3. SYNTAX BUILDER LAB (8 LEVELS) --- */
+        const labData = [
+            { w: ["My", "new", "laptop", "has", "fewer", "ports."], a: "My new laptop has fewer ports.", n: "Ports (Puertos USB/HDMI) es contable plural. Por eso usamos 'fewer' (menos) y no 'less'." },
+            { w: ["This", "server", "requires", "less", "cooling", "power."], a: "This server requires less cooling power.", n: "Power (Energía) es un concepto incontable. La palabra correcta para restar cantidad es 'less'." },
+            { w: ["We", "should", "eat", "less", "fast", "food."], a: "We should eat less fast food.", n: "El sustantivo 'Food' en general es incontable. Por lo tanto, debes consumir 'less' food." },
+            { w: ["She", "bought", "the", "fewest", "apples", "today."], a: "She bought the fewest apples today.", n: "Apples es contable. Al hablar del mínimo absoluto (el que menos compró), usamos el superlativo 'the fewest'." },
+            { w: ["This", "recipe", "uses", "the", "least", "salt."], a: "This recipe uses the least salt.", n: "Salt es un polvo incontable. El superlativo que indica la mínima cantidad absoluta es 'the least'." },
+            { w: ["Video", "editing", "needs", "more", "RAM", "memory."], a: "Video editing needs more RAM memory.", n: "RAM es incontable, pero 'more' es el comodín de superioridad que funciona perfecto para ambos universos." },
+            { w: ["There", "are", "fewer", "calories", "in", "this", "salad."], a: "There are fewer calories in this salad.", n: "Calories es contable (lleva S). Si quieres decir que tiene menos, obligatoriamente debes usar 'fewer'." },
+            { w: ["Which", "phone", "has", "the", "most", "cameras?"], a: "Which phone has the most cameras?", n: "'The most' es el superlativo máximo universal. Pregunta por el límite superior, sin importar si es contable o no." }
+        ];
+
+        let labLvl = 0;
+
+        function loadLab() {
+            if(labLvl >= labData.length) {
+                document.getElementById('word-pool').innerHTML = `<h3 style="font-family:'Outfit'; color:var(--c-emerald); width:100%;">¡Entrenamiento Sintáctico Completado!</h3>`;
+                document.getElementById('answer-box').innerHTML = '';
+                document.getElementById('btn-check-game').style.display = 'none';
+                return;
+            }
+
+            document.getElementById('game-lvl-display').innerText = `Level ${labLvl + 1} / ${labData.length}`;
+            document.getElementById('game-feedback').style.display = 'none';
+            
+            const btn = document.getElementById('btn-check-game');
+            btn.innerText = "EVALUATE SYNTAX";
+            btn.style.background = "linear-gradient(135deg, var(--rc-blue), var(--rc-cyan))";
+            btn.onclick = checkGameState;
+
+            const pool = document.getElementById('word-pool');
+            const ans = document.getElementById('answer-box');
+            pool.innerHTML = ''; ans.innerHTML = '';
+
+            // Randomize array
+            let arr = [...labData[labLvl].w];
+            arr.sort(() => Math.random() - 0.5);
+
+            arr.forEach((word, idx) => {
+                let chip = document.createElement('div');
+                chip.className = 'word-chip';
+                chip.innerText = word;
+                chip.onclick = () => {
+                    if(chip.parentElement === pool) ans.appendChild(chip);
+                    else pool.appendChild(chip);
+                };
+                pool.appendChild(chip);
+            });
+        }
+
+        function checkGameState() {
+            const ansBox = document.getElementById('answer-box');
+            const chips = Array.from(ansBox.querySelectorAll('.word-chip'));
+            const userStr = chips.map(c => c.innerText).join(' ');
+
+            if(userStr === labData[labLvl].a) {
+                // Éxito
+                document.getElementById('feedback-desc').innerText = labData[labLvl].n;
+                document.getElementById('game-feedback').style.display = 'block';
+                
+                const btn = document.getElementById('btn-check-game');
+                btn.innerText = "PROCEED TO NEXT LEVEL";
+                btn.style.background = "var(--c-emerald)";
+                btn.onclick = () => { labLvl++; loadLab(); };
+                
+                confetti({ particleCount: 80, spread: 70, origin: { y: 0.7 } });
+            } else {
+                // Fallo
+                ansBox.style.transform = "translateX(-5px)";
+                setTimeout(() => ansBox.style.transform = "translateX(5px)", 100);
+                setTimeout(() => ansBox.style.transform = "translateX(-5px)", 200);
+                setTimeout(() => ansBox.style.transform = "translateX(0)", 300);
+                showToast("Sintaxis incorrecta. Revisa el orden.", "error");
+            }
+        }
+
+        /* --- 4. EXAM PROTOCOL (15 Qs, 5 Min) --- */
+        const examQs = [
+            { q: "We need _____ bandwidth to stream 4K video.", o: ["fewer", "more", "the most"], a: 1 },
+            { q: "This basic laptop has _____ RAM than the Pro version.", o: ["less", "fewer", "the least"], a: 0 },
+            { q: "I ate _____ slices of pizza than my brother.", o: ["less", "fewer", "fewest"], a: 1 },
+            { q: "Of all the recipes, this one uses _____ sugar.", o: ["fewer", "less", "the least"], a: 2 },
+            { q: "Which phone has _____ battery life in the market?", o: ["the most", "more", "most"], a: 0 },
+            { q: "You should drink _____ coffee if you want to sleep.", o: ["fewer", "the least", "less"], a: 2 },
+            { q: "My old computer had _____ USB ports than this new one.", o: ["less", "fewer", "the fewest"], a: 1 },
+            { q: "Out of the 3 servers, Server A crashed _____ times.", o: ["the least", "less", "the fewest"], a: 2 }, // Times = contable
+            { q: "This software requires _____ processing power to run.", o: ["less", "fewer", "least"], a: 0 },
+            { q: "Who ate _____ burgers at the party? Only 1!", o: ["less", "the fewest", "the least"], a: 1 },
+            { q: "I have _____ money today than I had yesterday.", o: ["less", "fewer", "the least"], a: 0 }, // Money is uncount
+            { q: "We bought _____ tomatoes because they were expensive.", o: ["less", "fewer", "the fewest"], a: 1 },
+            { q: "That gaming PC produces _____ heat of them all.", o: ["the fewest", "less", "the least"], a: 2 },
+            { q: "She has _____ followers on social media than me.", o: ["less", "fewer", "fewest"], a: 1 },
+            { q: "I want _____ ice in my soda, please.", o: ["fewer", "less", "the least"], a: 1 } // Ice is uncount
+        ];
+
+        let testState = { idx: 0, score: 0, picked: null, locked: false };
+        let clockInt;
+        let timeRemaining = 300; // 5 mins
+
+        function initiateTest() {
+            document.getElementById('test-intro-card').style.display = 'none';
+            document.getElementById('test-engine-card').style.display = 'block';
+            
+            testState = { idx: 0, score: 0, picked: null, locked: false };
+            timeRemaining = 300;
+            
+            updateClockUI();
+            clockInt = setInterval(() => {
+                timeRemaining--;
+                updateClockUI();
+                if(timeRemaining <= 0) {
+                    clearInterval(clockInt);
+                    showToast("¡Tiempo agotado! Cerrando protocolo...", "error");
+                    finalizeTest();
+                }
+            }, 1000);
+
+            renderTestQ();
+        }
+
+        function updateClockUI() {
+            const m = Math.floor(timeRemaining / 60);
+            const s = timeRemaining % 60;
+            const disp = document.getElementById('clock-display');
+            disp.innerHTML = `<i class="fas fa-stopwatch"></i> 0${m}:${s < 10 ? '0' : ''}${s}`;
+            
+            if(timeRemaining <= 60) disp.classList.add('danger');
+            else disp.classList.remove('danger');
+        }
+
+        function renderTestQ() {
+            const data = examQs[testState.idx];
+            const btn = document.getElementById('btn-next-q');
+            
+            testState.locked = false;
+            testState.picked = null;
+            btn.disabled = true;
+            btn.innerText = "LOCK ANSWER";
+            btn.style.background = "var(--rc-cyan)";
+            btn.style.color = "var(--rc-navy)";
+
+            document.getElementById('q-counter').innerText = testState.idx + 1;
+            document.getElementById('question-render').innerText = `${testState.idx + 1}. ${data.q}`;
+
+            const optsBox = document.getElementById('options-render');
+            optsBox.innerHTML = '';
+
+            data.o.forEach((optText, i) => {
+                let optBtn = document.createElement('button');
+                optBtn.className = 'opt-card';
+                optBtn.innerText = optText;
+                optBtn.onclick = () => selectOption(i, optBtn);
+                optsBox.appendChild(optBtn);
+            });
+        }
+
+        function selectOption(idx, btnRef) {
+            if(testState.locked) return;
+            document.querySelectorAll('.opt-card').forEach(b => b.classList.remove('selected'));
+            btnRef.classList.add('selected');
+            testState.picked = idx;
+            document.getElementById('btn-next-q').disabled = false;
+        }
+
+        function evaluateAndNext() {
+            const data = examQs[testState.idx];
+            const btn = document.getElementById('btn-next-q');
+
+            if(!testState.locked) {
+                // Lock and grade
+                testState.locked = true;
+                const allOpts = document.querySelectorAll('.opt-card');
+                
+                if(testState.picked === data.a) {
+                    testState.score++;
+                    allOpts[testState.picked].style.background = "var(--c-emerald)";
+                    allOpts[testState.picked].style.color = "white";
+                    allOpts[testState.picked].style.borderColor = "var(--c-emerald)";
+                } else {
+                    allOpts[testState.picked].style.background = "var(--c-rose)";
+                    allOpts[testState.picked].style.color = "white";
+                    allOpts[testState.picked].style.borderColor = "var(--c-rose)";
+                    
+                    // Show correct
+                    allOpts[data.a].style.background = "var(--c-emerald)";
+                    allOpts[data.a].style.color = "white";
+                    allOpts[data.a].style.borderColor = "var(--c-emerald)";
+                }
+
+                btn.innerText = (testState.idx === examQs.length - 1) ? "FINISH PROTOCOL" : "NEXT PROTOCOL";
+                btn.style.background = "var(--rc-navy)";
+                btn.style.color = "white";
+            } else {
+                // Next question
+                testState.idx++;
+                if(testState.idx < examQs.length) renderTestQ();
+                else finalizeTest();
+            }
+        }
+
+        function finalizeTest() {
+            clearInterval(clockInt);
+            const modal = document.getElementById('result-modal');
+            const scoreCircle = document.getElementById('modal-score');
+            const feedback = document.getElementById('modal-feedback');
+            
+            const percentage = Math.round((testState.score / examQs.length) * 100);
+            scoreCircle.innerText = `${percentage}%`;
+
+            if(percentage >= 80) {
+                scoreCircle.style.borderColor = "var(--c-emerald)";
+                scoreCircle.style.color = "var(--c-emerald)";
+                feedback.innerHTML = `<strong>¡Excelente rendimiento!</strong> Has aprobado con ${testState.score} de 15 aciertos. Tu dominio gramatical sobre tecnología y gastronomía cumple con los estándares del Rators Club.`;
+                confetti({ particleCount: 250, spread: 120, origin: { y: 0.5 } });
+            } else {
+                scoreCircle.style.borderColor = "var(--c-rose)";
+                scoreCircle.style.color = "var(--c-rose)";
+                feedback.innerHTML = `<strong>Rendimiento insuficiente.</strong> Obtuviste ${testState.score} de 15 aciertos. El algoritmo sugiere que repases urgentemente la diferencia entre sustantivos continuos y discretos.`;
+            }
+
+            modal.style.display = 'flex';
+        }
+
+        // INIT
+        window.onload = () => { loadLab(); };
+
+    </script>
+</body>
+</html>
